@@ -1,17 +1,23 @@
-from flask import Flask
+from flask import Flask, render_template
+
 import pandas as pd
 import xml.etree.ElementTree as et
+
+app = Flask(__name__, static_folder="./build/static",
+            template_folder="./build")
 
 # xmlデータをパース
 tree = et.parse("./record.xml")
 root = tree.getroot()
 
-app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template("index.html")
 
 
 @app.route('/api/home')
 def hello():
-
     # 要素取得：Xpath指定
     infomation = tree.findall("dict/dict/dict")
     song_info = []
