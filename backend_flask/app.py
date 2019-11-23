@@ -34,6 +34,7 @@ def hello():
         song_info.append(song_info_dict)
 
     df = pd.DataFrame(song_info)
+    df = df.head(100) # 100件に絞る
     # record単位のjsonに変換
     json = df.to_json(force_ascii=False, orient="records")
 

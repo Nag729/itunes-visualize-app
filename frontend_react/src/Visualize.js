@@ -1,14 +1,36 @@
 import React from 'react';
 import axios from 'axios';
 
+import { withStyles } from '@material-ui/core/styles';
+import { Container, Box, Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+
+const styles = theme => ({
+	root: {
+		width: '100%',
+		marginTop: theme.spacing(2),
+	},
+	heroContent: {
+		backgroundColor: theme.palette.background.paper,
+		padding: theme.spacing(4, 0, 6),
+	},
+	heroButtons: {
+		marginTop: theme.spacing(2),
+	},
+	paper: {
+		overflowX: 'auto',
+	},
+	table: {
+		minWidth: 650,
+	},
+});
 
 class Visualize extends React.Component {
 	constructor(props) {
@@ -32,40 +54,58 @@ class Visualize extends React.Component {
 	};
 
 	render() {
-		const useStyles = makeStyles({
-			root: {
-				width: '100%',
-				overflowX: 'auto',
-			},
-			table: {
-				minWidth: 650,
-			},
-		});
-
 		return (
-			<div>
-				<Button variant="contained" color="primary" onClick={this.handleClick}>
-					Default
-				</Button>
-				<Paper className={useStyles.root}>
-					<Table className={useStyles.table} aria-label="simple table">
-						<TableHead>
-							<TableRow>
-								<TableCell>アルバム</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{this.state.rows.map((row, index) => (
-								<TableRow key={index}>
-									<TableCell>{row.Album}</TableCell>
+			<React.Fragment>
+				<div className={this.props.classes.heroContent}>
+					<Container container maxWidth="sm">
+						<Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom>
+							iTunesライブラリの情報を可視化しましょう!
+						</Typography>
+						<Typography variant="subtitle1" align="center" color="textSecondary" paragraph>
+							iTunesからエクスポートした`.xml`ファイルをアップロードすると簡単に情報を可視化できます.
+							<br />
+							これまでに最も多く聴いた曲やアーティストごとのランキングを見て、音楽の好みを再発見してください.
+						</Typography>
+						<div className={this.props.classes.heroButtons}>
+							<Grid container justify="center">
+								<Grid item>
+									<Button variant="contained" color="primary" onClick={this.handleClick} className="btn-search">
+										Search Data
+									</Button>
+								</Grid>
+							</Grid>
+						</div>
+					</Container>
+				</div>
+				<Container maxWidth="lg">
+					<Paper className={this.props.classes.paper}>
+						<Table className={this.props.classes.table} aria-label="simple table">
+							<TableHead>
+								<TableRow>
+									<TableCell>アーティスト</TableCell>
+									<TableCell>アルバム</TableCell>
+									<TableCell>曲名</TableCell>
+									<TableCell>リリース年</TableCell>
+									<TableCell>再生回数</TableCell>
 								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</Paper>
-			</div>
+							</TableHead>
+							<TableBody>
+								{this.state.rows.map((row, index) => (
+									<TableRow key={index}>
+										<TableCell>{row['Artist']}</TableCell>
+										<TableCell>{row['Album']}</TableCell>
+										<TableCell>{row['Name']}</TableCell>
+										<TableCell>{row['Year']}</TableCell>
+										<TableCell>{row['Play Count']}</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</Paper>
+				</Container>
+			</React.Fragment>
 		);
 	}
 }
 
-export default Visualize;
+export default withStyles(styles)(Visualize);
