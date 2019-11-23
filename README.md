@@ -32,6 +32,7 @@
 - :link: [Flask で React アプリを走らせる](https://qiita.com/sand/items/49af68f1af296724e9b8)
 - :link: [Heroku に Flask をデプロイ](https://tanuhack.com/deploy-flask-heroku/)
 - :link: [GitHub から Heroku にデプロイ](https://qiita.com/sho7650/items/ebd87c5dc2c4c7abb8f0)
+- :link: [Heroku でサブディレクトリをデプロイ](https://qrunch.net/@yumechi/entries/8d7uwLWuOFtA09sn)
 
 # Issues
 
