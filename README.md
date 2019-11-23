@@ -25,7 +25,15 @@
 
 - ~~GitHub にプロジェクト作って Collaborator 追加~~
 
-## Heroku
+## [Heroku](https://jp.heroku.com/)
+
+<img src="https://cdn-ak.f.st-hatena.com/images/fotolife/m/mickey-STRANGE/20180507/20180507210630.jpg" width="500px">
+
+### How To Deploy
+
+1. `/frontend_react`ディレクトリの React アプリケーションを`npm tun build`コマンドでビルド
+2. 作成された`/build`ディレクトリを`/backend_flask`にコピー
+3. `git subtree push --prefix backend_flask/ heroku master`で Heroku にデプロイ
 
 ### 役に立ったリンク集
 
