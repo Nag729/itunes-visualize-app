@@ -46,6 +46,7 @@
 
 - Flask からクライアントに返す件数を絞る
 - ファイルアップロード機能追加
+  - [material-ui-dropzone](https://github.com/Yuvaleros/material-ui-dropzone)が使えそう
 - ソート機能追加
   - ソートはクライアントでもできるけど…
 - 各カラムでの`GROUP BY`機能追加

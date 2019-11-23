@@ -10,12 +10,14 @@ app = Flask(__name__, static_folder="./build/static",
 tree = et.parse("./record.xml")
 root = tree.getroot()
 
-
+# ルートpath
+# アプリ起動時にアクセスされて、Reactのトップページを表示する
 @app.route('/')
 def index():
     return render_template("index.html")
 
-
+# XMLファイルアップロード
+# XMLファイルをパースしてクライアントにデフォルトのJSONファイルを返す
 @app.route('/api/home')
 def hello():
     # 要素取得：Xpath指定
@@ -34,7 +36,7 @@ def hello():
         song_info.append(song_info_dict)
 
     df = pd.DataFrame(song_info)
-    df = df.head(100) # 100件に絞る
+    df = df.head(100)  # 100件に絞る
     # record単位のjsonに変換
     json = df.to_json(force_ascii=False, orient="records")
 

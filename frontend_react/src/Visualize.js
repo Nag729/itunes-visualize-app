@@ -27,8 +27,9 @@ const styles = theme => ({
 	paper: {
 		overflowX: 'auto',
 	},
-	table: {
+	tableWrapper: {
 		minWidth: 650,
+		maxHeight: 500,
 	},
 });
 
@@ -79,28 +80,30 @@ class Visualize extends React.Component {
 				</div>
 				<Container maxWidth="lg">
 					<Paper className={this.props.classes.paper}>
-						<Table className={this.props.classes.table} aria-label="simple table">
-							<TableHead>
-								<TableRow>
-									<TableCell>アーティスト</TableCell>
-									<TableCell>アルバム</TableCell>
-									<TableCell>曲名</TableCell>
-									<TableCell>リリース年</TableCell>
-									<TableCell>再生回数</TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{this.state.rows.map((row, index) => (
-									<TableRow key={index}>
-										<TableCell>{row['Artist']}</TableCell>
-										<TableCell>{row['Album']}</TableCell>
-										<TableCell>{row['Name']}</TableCell>
-										<TableCell>{row['Year']}</TableCell>
-										<TableCell>{row['Play Count']}</TableCell>
+						<div className={this.props.classes.tableWrapper}>
+							<Table stickyHeader aria-label="simple table">
+								<TableHead>
+									<TableRow>
+										<TableCell>アーティスト</TableCell>
+										<TableCell>アルバム</TableCell>
+										<TableCell>曲名</TableCell>
+										<TableCell>リリース年</TableCell>
+										<TableCell>再生回数</TableCell>
 									</TableRow>
-								))}
-							</TableBody>
-						</Table>
+								</TableHead>
+								<TableBody>
+									{this.state.rows.map((row, index) => (
+										<TableRow key={index}>
+											<TableCell>{row['Artist']}</TableCell>
+											<TableCell>{row['Album']}</TableCell>
+											<TableCell>{row['Name']}</TableCell>
+											<TableCell>{row['Year']}</TableCell>
+											<TableCell>{row['Play Count']}</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						</div>
 					</Paper>
 				</Container>
 			</React.Fragment>
