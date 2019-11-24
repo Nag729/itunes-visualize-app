@@ -43,7 +43,7 @@ class App extends React.Component {
 					{/* URLに応じてコンポーネント表示を切り替え */}
 					<Router>
 						<div>
-							<Route path="/top" component={TopPage} />
+							<Route path="/" component={TopPage} />
 							<Route path="/visual" component={Visualize} />
 						</div>
 					</Router>

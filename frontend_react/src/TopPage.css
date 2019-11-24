@@ -1,0 +1,13 @@
+.material-ui-dropzone {
+	margin: 0 auto; /* 中央寄せ */
+	text-align: center; /* Chipsの中央寄せ */
+	min-height: 200px !important;
+	width: 60% !important;
+	border-width: 2px !important;
+	border-color: dodgerblue !important;
+	background-color: aliceblue !important;
+}
+
+.material-ui-dropzone-paragraph {
+	font-size: 14px !important;
+}
