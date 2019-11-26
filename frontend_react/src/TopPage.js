@@ -23,7 +23,7 @@ class TopPage extends React.Component {
 		super(props);
 		this.state = {
 			file: [],
-			isDisabled: true
+			isDisabled: true,
 		};
 	}
 
@@ -31,41 +31,34 @@ class TopPage extends React.Component {
 		// console.log(file[0]);
 		this.setState({
 			file: file[0],
-			isDisabled: false
+			isDisabled: false,
 		});
 	}
 
 	sendFile() {
 		// console.log(this.state.file);
 		const params = new FormData();
-		params.append('file', this.state.file, 'record.xml');
+		params.append('file', this.state.file, 'records.xml');
 		// console.log(params.get('file'));
 		axios
-			.post(
-				'http://localhost:3000/api/upload',
-				params,
-				{
-					headers: {
-						'content-type': 'multipart/form-data',
-					},
-				}
-			)
-			.then((result) => {
-				console.log(result)
+			.post('http://localhost:3000/api/upload', params, {
+				headers: {
+					'content-type': 'multipart/form-data',
+				},
+			})
+			.then(result => {
+				console.log(result);
 			})
 			.catch(() => {
-				console.error("error!!!!!!")
-			})
+				console.error('error!!!!!!');
+			});
 	}
-
-
-
 
 	render() {
 		return (
 			<React.Fragment>
 				<div className={this.props.classes.heroContent}>
-					<Container container maxWidth="md">
+					<Container maxWidth="md">
 						<DropzoneArea
 							dropzoneClass={'material-ui-dropzone'}
 							dropzoneParagraphClass={'material-ui-dropzone-paragraph'}
@@ -82,7 +75,13 @@ class TopPage extends React.Component {
 						<div className={this.props.classes.heroButton}>
 							<Grid container justify="center">
 								<Grid item>
-									<Button variant="contained" color="primary" size="large" disabled={this.state.isDisabled} onClick={this.sendFile.bind(this)}>
+									<Button
+										variant="contained"
+										color="primary"
+										size="large"
+										disabled={this.state.isDisabled}
+										onClick={this.sendFile.bind(this)}
+									>
 										Upload Data!
 									</Button>
 								</Grid>

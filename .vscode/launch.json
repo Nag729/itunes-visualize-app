@@ -8,8 +8,7 @@
 			"name": "Python: Flask",
 			"type": "python",
 			"request": "launch",
-			"program": "${workspaceRoot}/backend_flask/app.py",
-			"cwd": "${workspaceRoot}",
+			"cwd": "${fileDirName}",
 			"module": "flask",
 			"env": {
 				"FLASK_APP": "${workspaceRoot}/backend_flask/app.py",

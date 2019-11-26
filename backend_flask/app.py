@@ -1,5 +1,7 @@
-from flask import Flask, render_template, request, jsonify, make_response
 import os
+from flask import Flask, render_template, request, jsonify, make_response
+import werkzeug
+from datetime import datetime
 
 import pandas as pd
 import xml.etree.ElementTree as et
@@ -7,13 +9,13 @@ import xml.etree.ElementTree as et
 app = Flask(__name__, static_folder="./build/static",
             template_folder="./build")
 
+UPLOAD_FOLDER = './uploads'
 app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024
-
-UPLOAD_DIR = os.getenv("UPLOAD_DIR_PATH")
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # xmlデータをパース
 tree = et.parse(
-    "/Users/shungo/Desktop/Apps/itunes-visualize-app/backend_flask/record.xml")
+    "./record.xml")
 root = tree.getroot()
 
 # ルートpath
@@ -52,10 +54,26 @@ def hello():
 @app.route('/api/upload', methods=['POST'])
 def upload():
 
-    app.logger.debug(request)
-    # file = request.files['file']
-    # fileName = file.fileName
-    # make_response(jsonify({'result': fileName}))
+    # ファイルがない場合
+    if 'file' not in request.files:
+        msg = 'ファイルがありません'
+        return make_response(jsonify({'result': msg}))
+
+    # データの取り出し
+    file = request.files['file']
+    fileName = file.filename
+
+    # ファイル名がない場合
+    if fileName == '':
+        msg = 'ファイルがありません'
+        return make_response(jsonify({'result': msg}))
+
+    # ファイルの保存
+    saveName = datetime.now().strftime("%Y%m%d_%H%M%S_") + \
+        werkzeug.utils.secure_filename(fileName)
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], saveName))
+
+    return make_response(jsonify({'result': 'Upload Done!'}))
 
 
 # おまじない
