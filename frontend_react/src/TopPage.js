@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { Container, Box, Grid } from '@material-ui/core';
 import { DropzoneArea } from 'material-ui-dropzone';
 import Button from '@material-ui/core/Button';
+import axios from 'axios';
 
 import './TopPage.css';
 
@@ -21,15 +22,44 @@ class TopPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			files: [],
+			file: [],
+			isDisabled: true
 		};
 	}
 
-	handleChange(files) {
+	handleChange(file) {
+		// console.log(file[0]);
 		this.setState({
-			files: files,
+			file: file[0],
+			isDisabled: false
 		});
 	}
+
+	sendFile() {
+		// console.log(this.state.file);
+		const params = new FormData();
+		params.append('file', this.state.file, 'record.xml');
+		// console.log(params.get('file'));
+		axios
+			.post(
+				'http://localhost:3000/api/upload',
+				params,
+				{
+					headers: {
+						'content-type': 'multipart/form-data',
+					},
+				}
+			)
+			.then((result) => {
+				console.log(result)
+			})
+			.catch(() => {
+				console.error("error!!!!!!")
+			})
+	}
+
+
+
 
 	render() {
 		return (
@@ -47,11 +77,12 @@ class TopPage extends React.Component {
 							previewChipProps={{ color: 'primary' }}
 							filesLimit={1}
 							onChange={this.handleChange.bind(this)}
+							maxFileSize={20000000}
 						/>
 						<div className={this.props.classes.heroButton}>
 							<Grid container justify="center">
 								<Grid item>
-									<Button variant="contained" color="primary" size="large" disabled>
+									<Button variant="contained" color="primary" size="large" disabled={this.state.isDisabled} onClick={this.sendFile.bind(this)}>
 										Upload Data!
 									</Button>
 								</Grid>
