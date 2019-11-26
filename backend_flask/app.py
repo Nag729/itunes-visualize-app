@@ -1,10 +1,15 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify, make_response
+import os
 
 import pandas as pd
 import xml.etree.ElementTree as et
 
 app = Flask(__name__, static_folder="./build/static",
             template_folder="./build")
+
+app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024
+
+UPLOAD_DIR = os.getenv("UPLOAD_DIR_PATH")
 
 # xmlデータをパース
 tree = et.parse("./record.xml")
@@ -41,6 +46,15 @@ def hello():
     json = df.to_json(force_ascii=False, orient="records")
 
     return json
+
+
+@app.route('/api/upload', methods=['POST'])
+def upload():
+
+    app.logger.debug(request)
+    # file = request.files['file']
+    # fileName = file.fileName
+    # make_response(jsonify({'result': fileName}))
 
 
 # おまじない
