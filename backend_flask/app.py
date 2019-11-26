@@ -7,7 +7,8 @@ app = Flask(__name__, static_folder="./build/static",
             template_folder="./build")
 
 # xmlデータをパース
-tree = et.parse("./record.xml")
+tree = et.parse(
+    "/Users/shungo/Desktop/Apps/itunes-visualize-app/backend_flask/record.xml")
 root = tree.getroot()
 
 # ルートpath
