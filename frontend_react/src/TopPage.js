@@ -28,7 +28,6 @@ class TopPage extends React.Component {
 	}
 
 	handleChange(file) {
-		// console.log(file[0]);
 		this.setState({
 			file: file[0],
 			isDisabled: false,
@@ -36,10 +35,9 @@ class TopPage extends React.Component {
 	}
 
 	sendFile() {
-		// console.log(this.state.file);
 		const params = new FormData();
 		params.append('file', this.state.file, 'records.xml');
-		// console.log(params.get('file'));
+
 		axios
 			.post('http://localhost:3000/api/upload', params, {
 				headers: {
@@ -47,7 +45,11 @@ class TopPage extends React.Component {
 				},
 			})
 			.then(result => {
-				console.log(result);
+				console.log(result.data);
+				if (result.data) {
+					// TODO: ReduxにDataFrameの状態を持たせる?
+					// TOOD: Visualizeに画面遷移させる
+				}
 			})
 			.catch(() => {
 				console.error('error!!!!!!');
@@ -70,7 +72,7 @@ class TopPage extends React.Component {
 							previewChipProps={{ color: 'primary' }}
 							filesLimit={1}
 							onChange={this.handleChange.bind(this)}
-							maxFileSize={20000000}
+							maxFileSize={30000000}
 						/>
 						<div className={this.props.classes.heroButton}>
 							<Grid container justify="center">

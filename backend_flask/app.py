@@ -10,13 +10,8 @@ app = Flask(__name__, static_folder="./build/static",
             template_folder="./build")
 
 UPLOAD_FOLDER = './uploads'
-app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# xmlデータをパース
-tree = et.parse(
-    "./record.xml")
-root = tree.getroot()
 
 # ルートpath
 # アプリ起動時にアクセスされて、Reactのトップページを表示する
@@ -24,16 +19,57 @@ root = tree.getroot()
 def index():
     return render_template("index.html")
 
-# XMLファイルアップロード
-# XMLファイルをパースしてクライアントにデフォルトのJSONファイルを返す
-@app.route('/api/home')
-def hello():
+# ファイルアップロード時に呼び出されるREST
+# 受け取ったXMLファイルをparse/JSON化までしてクライアントに返す
+@app.route('/api/upload', methods=['POST'])
+def upload():
+
+    # ファイルがない場合
+    if 'file' not in request.files:
+        msg = 'ファイルがありません'
+        return make_response(jsonify(data=msg))
+
+    # データの取り出し
+    file = request.files['file']
+    fileName = file.filename
+
+    # ファイル名がない場合
+    if fileName == '':
+        msg = 'ファイルがありません'
+        return make_response(jsonify(data=msg))
+
+    # ファイルの保存
+    saveName = datetime.now().strftime("%Y%m%d_%H%M%S_") + \
+        werkzeug.utils.secure_filename(fileName)
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], saveName))
+
+    # 取得したXMLファイルを元にパースするJSONをjsonFileにセット
+    jsonFile = parseXMLFile(saveName)
+
+    return jsonify(data=jsonFile)
+
+# アップロードされたXMLファイルをパースしてJSON形式で返す関数
+
+
+def parseXMLFile(fileName):
+
+    # アップロードされたファイルデータをパース
+    tree = et.parse("./uploads/" + fileName)
+    root = tree.getroot()
+
     # 要素取得：Xpath指定
-    infomation = tree.findall("dict/dict/dict")
+    information = tree.findall("dict/dict/dict")
+
+    app.logger.debug(len(information) == 0)
+
+    if len(information) == 0:
+        msg = 'XMLファイルの形式が正しくありません'
+        return msg
+
     song_info = []
 
-    # infomation > song > elementでdict中の各要素に対して処理
-    for song in infomation:
+    # information > song > elementでdict中の各要素に対して処理
+    for song in information:
         song_info_dict = {}
         key = ""
         for element in song:
@@ -44,36 +80,12 @@ def hello():
         song_info.append(song_info_dict)
 
     df = pd.DataFrame(song_info)
-    df = df.head(100)  # 100件に絞る
+    df = df.head(100)  # return件数を100件に絞る
+
     # record単位のjsonに変換
     json = df.to_json(force_ascii=False, orient="records")
 
     return json
-
-
-@app.route('/api/upload', methods=['POST'])
-def upload():
-
-    # ファイルがない場合
-    if 'file' not in request.files:
-        msg = 'ファイルがありません'
-        return make_response(jsonify({'result': msg}))
-
-    # データの取り出し
-    file = request.files['file']
-    fileName = file.filename
-
-    # ファイル名がない場合
-    if fileName == '':
-        msg = 'ファイルがありません'
-        return make_response(jsonify({'result': msg}))
-
-    # ファイルの保存
-    saveName = datetime.now().strftime("%Y%m%d_%H%M%S_") + \
-        werkzeug.utils.secure_filename(fileName)
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], saveName))
-
-    return make_response(jsonify({'result': 'Upload Done!'}))
 
 
 # おまじない
