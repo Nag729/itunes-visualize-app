@@ -44,11 +44,12 @@
 
 # Issues
 
-- ~~Flask からクライアントに返す件数を絞る~~
 - ファイルアップロード機能追加
   - [material-ui-dropzone](https://github.com/Yuvaleros/material-ui-dropzone)が使えそう
+  - ~~axiosのPOST通信でファイルを送ってFlaskで受け取るまで実装~~
+  - ファイル情報をDBに保存
 - ソート機能追加
-  - ソートはクライアントでもできるけど…
+  - ソートはクライアントでもできそうだけど
 - 各カラムでの`GROUP BY`機能追加
 - 期間を絞る機能追加
   - `Release Date`/`Date Added`
