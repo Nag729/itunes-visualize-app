@@ -20,7 +20,7 @@ def index():
     return render_template("index.html")
 
 # ファイルアップロード時に呼び出されるREST
-# 受け取ったXMLファイルをparse/JSON化までしてクライアントに返す
+# 受け取ったXMLファイルをparse -> JSON化までしてクライアントに返す
 @app.route('/api/upload', methods=['POST'])
 def upload():
 
@@ -48,9 +48,8 @@ def upload():
 
     return jsonify(data=jsonFile)
 
+
 # アップロードされたXMLファイルをパースしてJSON形式で返す関数
-
-
 def parseXMLFile(fileName):
 
     # アップロードされたファイルデータをパース

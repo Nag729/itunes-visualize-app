@@ -6,7 +6,7 @@ import { DropzoneArea } from 'material-ui-dropzone';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
 
-import './TopPage.css';
+import './Upload.css';
 
 const styles = theme => ({
 	heroContent: {
@@ -52,7 +52,7 @@ class TopPage extends React.Component {
 				}
 			})
 			.catch(() => {
-				console.error('error!!!!!!');
+				console.error('errorだよ!');
 			});
 	}
 

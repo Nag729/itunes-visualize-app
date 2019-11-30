@@ -10,7 +10,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 // Components
 import Copyright from './Copyright';
-import TopPage from './TopPage';
+import Upload from './Upload';
 import Visualize from './Visualize';
 // このページの関連
 import './App.css';
@@ -43,8 +43,8 @@ class App extends React.Component {
 					{/* URLに応じてコンポーネント表示を切り替え */}
 					<Router>
 						<div>
-							<Route path="/" component={TopPage} />
-							<Route path="/visual" component={Visualize} />
+							<Route path="/" component={Upload} />
+							<Route path="/visualize" component={Visualize} />
 						</div>
 					</Router>
 					<Box mt={8}>
