@@ -27,7 +27,7 @@ def upload():
     # ファイルがない場合
     if 'file' not in request.files:
         msg = 'ファイルがありません'
-        return make_response(jsonify(data=msg))
+        return make_response(jsonify(msg))
 
     # データの取り出し
     file = request.files['file']
@@ -36,7 +36,7 @@ def upload():
     # ファイル名がない場合
     if fileName == '':
         msg = 'ファイルがありません'
-        return make_response(jsonify(data=msg))
+        return make_response(jsonify(msg))
 
     # ファイルの保存
     saveName = datetime.now().strftime("%Y%m%d_%H%M%S_") + \
@@ -46,7 +46,7 @@ def upload():
     # 取得したXMLファイルを元にパースするJSONをjsonFileにセット
     jsonFile = parseXMLFile(saveName)
 
-    return jsonify(data=jsonFile)
+    return jsonify(jsonFile)
 
 
 # アップロードされたXMLファイルをパースしてJSON形式で返す関数

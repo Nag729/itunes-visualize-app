@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
-import { Container, Box, Grid } from '@material-ui/core';
+import { Container, Grid } from '@material-ui/core';
 import { DropzoneArea } from 'material-ui-dropzone';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
@@ -24,6 +24,7 @@ class TopPage extends React.Component {
 		this.state = {
 			file: [],
 			isDisabled: true,
+			itunesData: '',
 		};
 	}
 
@@ -45,10 +46,19 @@ class TopPage extends React.Component {
 				},
 			})
 			.then(result => {
-				console.log(result.data);
 				if (result.data) {
-					// TODO: ReduxにDataFrameの状態を持たせる?
-					// TOOD: Visualizeに画面遷移させる
+					// 取得したデータをStateにセット
+					this.setState({
+						itunesData: result.data,
+					});
+					// Stateを渡して'/visualize'に遷移する
+					// TODO: 状態管理をReduxに変更する
+					this.props.history.push({
+						pathname: '/visualize',
+						state: { itunesData: this.state.itunesData },
+					});
+				} else {
+					alert('XMLファイルからデータが正しく取得できませんでした😢');
 				}
 			})
 			.catch(() => {

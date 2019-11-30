@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 
 import { withStyles } from '@material-ui/core/styles';
-import { Container, Box, Grid } from '@material-ui/core';
+import { Container, Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -36,29 +36,29 @@ const styles = theme => ({
 class Visualize extends React.Component {
 	constructor(props) {
 		super(props);
+
 		this.state = {
-			rows: [],
+			itunesData: [],
 		};
 	}
 
-	handleClick = () => {
-		axios
-			.get('http://localhost:3000/api/home', {
-				headers: {
-					Accept: 'Application/json',
-				},
-			})
-			.then(res => {
-				this.setState({ rows: res.data });
-			})
-			.catch(console.error);
-	};
+	/**
+	 * Mounting Method
+	 */
+	componentDidMount() {
+		// アップロード画面から受け取ったデータをJSON形式でStateに保持
+		const jsonData = JSON.parse(this.props.location.state.itunesData);
+
+		this.setState({
+			itunesData: jsonData,
+		});
+	}
 
 	render() {
 		return (
 			<React.Fragment>
 				<div className={this.props.classes.heroContent}>
-					<Container container maxWidth="sm">
+					<Container maxWidth="sm">
 						<Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom>
 							iTunesライブラリの情報を可視化しましょう!
 						</Typography>
@@ -92,7 +92,7 @@ class Visualize extends React.Component {
 									</TableRow>
 								</TableHead>
 								<TableBody>
-									{this.state.rows.map((row, index) => (
+									{this.state.itunesData.map((row, index) => (
 										<TableRow key={index}>
 											<TableCell>{row['Artist']}</TableCell>
 											<TableCell>{row['Album']}</TableCell>

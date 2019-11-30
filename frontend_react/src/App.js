@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 // material-ui
 import { withStyles } from '@material-ui/core/styles';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
-import { Container, Box, CssBaseline } from '@material-ui/core';
+import { Box, CssBaseline } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -43,8 +43,8 @@ class App extends React.Component {
 					{/* URLに応じてコンポーネント表示を切り替え */}
 					<Router>
 						<div>
-							<Route path="/" component={Upload} />
-							<Route path="/visualize" component={Visualize} />
+							<Route exact={true} path="/" component={Upload} />
+							<Route exact={true} path="/visualize" component={Visualize} />
 						</div>
 					</Router>
 					<Box mt={8}>
