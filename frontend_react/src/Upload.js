@@ -1,19 +1,26 @@
 import React from 'react';
+// eslint-disable-next-line
+import { css } from '@emotion/core';
+import axios from 'axios';
 
 import { withStyles } from '@material-ui/core/styles';
 import { Container, Grid } from '@material-ui/core';
 import { DropzoneArea } from 'material-ui-dropzone';
 import Button from '@material-ui/core/Button';
-import axios from 'axios';
+import Typography from '@material-ui/core/Typography';
+import HashLoader from 'react-spinners/HashLoader';
 
 import './Upload.css';
 
 const styles = theme => ({
 	heroContent: {
 		backgroundColor: theme.palette.background.paper,
-		padding: theme.spacing(4, 0, 4),
+		padding: theme.spacing(4, 0, 2),
 	},
 	heroButton: {
+		marginTop: theme.spacing(4),
+	},
+	loading: {
 		marginTop: theme.spacing(4),
 	},
 });
@@ -24,6 +31,7 @@ class TopPage extends React.Component {
 		this.state = {
 			file: [],
 			isDisabled: true,
+			isLoading: false,
 			itunesData: '',
 		};
 	}
@@ -31,11 +39,23 @@ class TopPage extends React.Component {
 	handleChange(file) {
 		this.setState({
 			file: file[0],
-			isDisabled: false,
+			isDisabled: !this.state.isDisabled,
+		});
+	}
+
+	handleDelete(file) {
+		this.setState({
+			file: [],
+			isDisabled: !this.state.isDisabled,
 		});
 	}
 
 	sendFile() {
+		// Loadingを開始
+		this.setState({
+			isLoading: !this.state.isLoading,
+		});
+
 		const params = new FormData();
 		params.append('file', this.state.file, 'records.xml');
 
@@ -50,6 +70,7 @@ class TopPage extends React.Component {
 					// 取得したデータをStateにセット
 					this.setState({
 						itunesData: result.data,
+						isLoading: !this.state.isLoading, // Loadingを終了
 					});
 					// Stateを渡して'/visualize'に遷移する
 					// TODO: 状態管理をReduxに変更する
@@ -71,18 +92,33 @@ class TopPage extends React.Component {
 			<React.Fragment>
 				<div className={this.props.classes.heroContent}>
 					<Container maxWidth="md">
+						<Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom>
+							自らの音楽性を再発見しましょう!
+						</Typography>
+						<Typography variant="subtitle1" align="center" color="textSecondary" paragraph>
+							iTunesからエクスポートした <code>.xml</code> ファイルをアップロードすると簡単に情報を可視化できます.
+							<br />
+							情報のエクスポートは、 <code>iTunes>ファイル>ライブラリ>ライブラリを書き出し</code> から
+							<br />
+							これまでに最も多く聴いた曲やアーティストごとのランキングを見て、音楽の好みを再発見しましょう！
+						</Typography>
+					</Container>
+				</div>
+				<div>
+					<Container maxWidth="md">
 						<DropzoneArea
 							dropzoneClass={'material-ui-dropzone'}
 							dropzoneParagraphClass={'material-ui-dropzone-paragraph'}
+							maxFileSize={30000000}
 							acceptedFiles={['application/xml', 'text/xml']}
-							dropzoneText={'iTunesからエクスポートしたxmlファイルを選択'}
+							dropzoneText={'iTunesからエクスポートしたxmlファイルを選択してね👋'}
 							showFileNames={true}
 							showPreviewsInDropzone={true}
 							useChipsForPreview={true}
 							previewChipProps={{ color: 'primary' }}
 							filesLimit={1}
 							onChange={this.handleChange.bind(this)}
-							maxFileSize={30000000}
+							onDelete={this.handleDelete.bind(this)}
 						/>
 						<div className={this.props.classes.heroButton}>
 							<Grid container justify="center">
@@ -96,6 +132,13 @@ class TopPage extends React.Component {
 									>
 										Upload Data!
 									</Button>
+								</Grid>
+							</Grid>
+						</div>
+						<div className={this.props.classes.loading}>
+							<Grid container justify="center">
+								<Grid item>
+									<HashLoader sizeUnit={'px'} size={50} color={'#123abc'} loading={this.state.isLoading} />
 								</Grid>
 							</Grid>
 						</div>

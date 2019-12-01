@@ -13,6 +13,7 @@ import Copyright from './Copyright';
 import Upload from './Upload';
 import Visualize from './Visualize';
 // このページの関連
+import GlobalStyle from './globalStyles.js';
 import './App.css';
 
 const styles = theme => ({
@@ -31,10 +32,11 @@ class App extends React.Component {
 		return (
 			<React.Fragment>
 				<CssBaseline></CssBaseline>
+				<GlobalStyle />
 				<AppBar position="relative">
 					<Toolbar>
 						<MusicNoteIcon className={this.props.classes.icon} />
-						<Typography variant="h6" color="inherit" noWrap>
+						<Typography variant="h5" color="inherit" noWrap>
 							iTunes Visualize App!
 						</Typography>
 					</Toolbar>

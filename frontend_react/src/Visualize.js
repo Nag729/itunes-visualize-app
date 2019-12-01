@@ -60,18 +60,33 @@ class Visualize extends React.Component {
 				<div className={this.props.classes.heroContent}>
 					<Container maxWidth="sm">
 						<Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom>
-							iTunesライブラリの情報を可視化しましょう!
+							新たな発見をシェアしましょう！
 						</Typography>
 						<Typography variant="subtitle1" align="center" color="textSecondary" paragraph>
-							iTunesからエクスポートした`.xml`ファイルをアップロードすると簡単に情報を可視化できます.
+							検索条件から、色々な情報を得ることができます.
 							<br />
-							これまでに最も多く聴いた曲やアーティストごとのランキングを見て、音楽の好みを再発見してください.
+							もしも新たな発見があったなら、それをTwitterでシェアしましょう！
 						</Typography>
 						<div className={this.props.classes.heroButtons}>
 							<Grid container justify="center">
 								<Grid item>
+									<Button variant="contained" color="primary" onClick={this.handleClick} className="btn-sort-by-artist">
+										アーティストのランキング
+									</Button>
+								</Grid>
+								<Grid item>
 									<Button variant="contained" color="primary" onClick={this.handleClick} className="btn-search">
-										Search Data
+										アーティストを選択
+									</Button>
+								</Grid>
+								<Grid item>
+									<Button variant="contained" color="primary" onClick={this.handleClick} className="btn-search">
+										アルバムのランキング
+									</Button>
+								</Grid>
+								<Grid item>
+									<Button variant="contained" color="primary" onClick={this.handleClick} className="btn-search">
+										リリース年別のランキング
 									</Button>
 								</Grid>
 							</Grid>
