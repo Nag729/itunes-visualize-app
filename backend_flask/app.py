@@ -2,6 +2,8 @@ import os
 from flask import Flask, render_template, request, jsonify, make_response
 import werkzeug
 from datetime import datetime
+import random
+import string
 
 import pandas as pd
 import xml.etree.ElementTree as et
@@ -39,17 +41,22 @@ def upload():
         msg = 'ファイルがありません'
         return make_response(jsonify(msg))
 
+    # ランダム文字列の生成
+    randStr = ''.join(
+        [random.choice(string.ascii_letters + string.digits) for i in range(6)])
+
     # ファイルの保存
-    saveName = datetime.now().strftime("%Y%m%d_%H%M%S_") + \
+    saveName = datetime.now().strftime("%Y%m%d_%H%M%S_") + randStr + "_" + \
         werkzeug.utils.secure_filename(fileName)
     file.save(os.path.join(app.config['UPLOAD_FOLDER'], saveName))
 
     # 取得したXMLファイルを元にパースするJSONをjsonFileにセット
     df = parseXmlToDf(saveName)
-    df.to_pickle("./pickles" + saveName + ".pkl")
-    jsonFile = parseDfToJson(df)
 
-    return jsonify(jsonFile)
+    jsonSortBySong = parseDfToJson(df, 'Song')
+    jsonSortByArtist = parseDfToJson(df, 'Artist')
+
+    return jsonify(song=jsonSortBySong, artist=jsonSortByArtist)
 
 
 # アップロードされたXMLファイルをパースしてJSON形式で返す関数
@@ -89,12 +96,21 @@ def parseXmlToDf(fileName):
 
 
 # 渡されたDataFrameをJson形式で返す
-def parseDfToJson(df, bySong):
+def parseDfToJson(df, sortKey):
 
     # app.logger.debug(df.dtypes)
 
-    # 曲の再生数順にソート
-    df = df.sort_values(by='Play Count', ascending=False)
+    if sortKey == 'Song':
+        # 曲の再生数順にソート
+        df = df.sort_values(by='Play Count', ascending=False)
+        # app.logger.debug(df)
+
+    elif sortKey == 'Artist':
+        # アーティストごとにGROUP BYしてからソート
+        df = df.groupby('Artist')[['Play Count']].sum()
+        df = df.sort_values(by='Play Count', ascending=False)
+        df = df.reset_index()
+        # app.logger.debug(df)
 
     # return件数を10件に絞る
     df = df.head(10)

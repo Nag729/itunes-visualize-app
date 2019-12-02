@@ -32,7 +32,8 @@ class TopPage extends React.Component {
 			file: [],
 			isDisabled: true,
 			isLoading: false,
-			itunesData: '',
+			dataSortedBySong: '',
+			dataSortedByArtist: '',
 		};
 	}
 
@@ -69,21 +70,28 @@ class TopPage extends React.Component {
 				if (result.data) {
 					// 取得したデータをStateにセット
 					this.setState({
-						itunesData: result.data,
+						dataBySong: result.data.song,
+						dataByArtist: result.data.artist,
 						isLoading: !this.state.isLoading, // Loadingを終了
 					});
 					// Stateを渡して'/visualize'に遷移する
 					// TODO: 状態管理をReduxに変更する
 					this.props.history.push({
 						pathname: '/visualize',
-						state: { itunesData: this.state.itunesData },
+						state: {
+							dataBySong: this.state.dataBySong,
+							dataByArtist: this.state.dataByArtist,
+						},
 					});
 				} else {
 					alert('XMLファイルからデータが正しく取得できませんでした😢');
 				}
 			})
 			.catch(() => {
-				console.error('errorだよ!');
+				console.error('よくわからないけどエラーだよ😢');
+				this.setState({
+					isLoading: !this.state.isLoading, // Loadingを終了
+				});
 			});
 	}
 
