@@ -1,12 +1,13 @@
 import React from 'react';
-import axios from 'axios';
 
 import { withStyles } from '@material-ui/core/styles';
-import { Container, Grid } from '@material-ui/core';
+import { Container, Grid, IconButton } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
-import InsertChartIcon from '@material-ui/icons/InsertChart';
-import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
+// import InsertChartIcon from '@material-ui/icons/InsertChart';
+// import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
+import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
+import TwitterIcon from '@material-ui/icons/Twitter';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -15,7 +16,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { HorizontalBar } from 'react-chartjs-2';
-import { json } from 'body-parser';
 
 const styles = theme => ({
 	root: {
@@ -24,7 +24,7 @@ const styles = theme => ({
 	},
 	heroContent: {
 		backgroundColor: theme.palette.background.paper,
-		padding: theme.spacing(4, 0, 6),
+		padding: theme.spacing(4, 0, 2),
 	},
 	heroButtons: {
 		marginTop: theme.spacing(2),
@@ -56,68 +56,17 @@ class Visualize extends React.Component {
 	 * Mounting Method
 	 */
 	componentDidMount() {
-		// アップロード画面から受け取ったデータをJSON形式でStateに保持
 		/**
 		 * 曲ごとのランキング
 		 */
-		// const dataBySong = JSON.parse(this.props.location.state.dataBySong);
-
-		// const songLabels = dataBySong.map(e => {
-		// 	return e['Name'];
-		// });
-
-		// const songData = dataBySong.map(e => {
-		// 	return e['Play Count'];
-		// });
-
-		// const songConfig = {
-		// 	labels: songLabels,
-		// 	datasets: [
-		// 		{
-		// 			label: 'Play-Count Sort By Song',
-		// 			data: songData,
-		// 			backgroundColor: 'rgba(188,54,255,0.2)',
-		// 			borderColor: 'rgba(188,54,255,0.8)',
-		// 			borderWidth: 1,
-		// 			hoverBackgroundColor: 'rgba(188,54,255,0.4)',
-		// 			hoverBorderColor: 'rgba(188,54,255,1)',
-		// 		},
-		// 	],
-		// };
-
 		const dataBySong = JSON.parse(this.props.location.state.dataBySong);
 		const songConfig = this.createGraphConfig(dataBySong, 'Song');
-
-		const dataByArtist = JSON.parse(this.props.location.state.dataByArtist);
-		const artistConfig = this.createGraphConfig(dataByArtist, 'Artist');
 
 		/**
 		 * アーティストごとのランキング
 		 */
-		// const dataByArtist = JSON.parse(this.props.location.state.dataByArtist);
-
-		// const artistLabels = dataByArtist.map(e => {
-		// 	return e['Artist'];
-		// });
-
-		// const artistData = dataByArtist.map(e => {
-		// 	return e['Play Count'];
-		// });
-
-		// const artistConfig = {
-		// 	labels: artistLabels,
-		// 	datasets: [
-		// 		{
-		// 			label: 'Play-Count Sort By Artist',
-		// 			data: artistData,
-		// 			backgroundColor: 'rgba(188,54,255,0.2)',
-		// 			borderColor: 'rgba(188,54,255,0.8)',
-		// 			borderWidth: 1,
-		// 			hoverBackgroundColor: 'rgba(188,54,255,0.4)',
-		// 			hoverBorderColor: 'rgba(188,54,255,1)',
-		// 		},
-		// 	],
-		// };
+		const dataByArtist = JSON.parse(this.props.location.state.dataByArtist);
+		const artistConfig = this.createGraphConfig(dataByArtist, 'Artist');
 
 		this.setState({
 			dataBySong: dataBySong,
@@ -127,9 +76,11 @@ class Visualize extends React.Component {
 		});
 	}
 
+	/**
+	 * グラフのconfigを作って返すよ
+	 */
 	createGraphConfig(data, label) {
-		console.log('呼ばれタタタ');
-
+		// グラフに表示する列名
 		const labels = data.map(e => {
 			if (label === 'Song') {
 				return e['Name'];
@@ -138,10 +89,12 @@ class Visualize extends React.Component {
 			}
 		});
 
+		// グラフのデータ
 		const count = data.map(e => {
 			return e['Play Count'];
 		});
 
+		// グラフのタイトル
 		let title;
 
 		if (label === 'Song') {
@@ -193,6 +146,13 @@ class Visualize extends React.Component {
 		});
 	}
 
+	/**
+	 * Twitterでシェアする
+	 */
+	handleShare() {
+		console.log('share');
+	}
+
 	render() {
 		return (
 			<React.Fragment>
@@ -213,12 +173,12 @@ class Visualize extends React.Component {
 										variant="contained"
 										color="primary"
 										onClick={this.handleSort.bind(this)}
-										className="btn-sort-by-artist"
+										startIcon={<LibraryMusicIcon />}
 									>
-										アーティストのランキング
+										{this.state.isSong ? 'アーティストで並び替え' : '曲で並び替え'}
 									</Button>
 								</Grid>
-								<Grid item>
+								{/* <Grid item>
 									<Fab
 										color="primary"
 										aria-label="change mode"
@@ -227,7 +187,7 @@ class Visualize extends React.Component {
 									>
 										{this.state.isTable ? <InsertChartIcon /> : <FormatListNumberedIcon />}
 									</Fab>
-								</Grid>
+								</Grid> */}
 							</Grid>
 						</div>
 					</Container>
@@ -278,6 +238,22 @@ class Visualize extends React.Component {
 						);
 					}
 				})()}
+				<Container maxWidth="sm">
+					<div className={this.props.classes.heroButtons}>
+						<Grid container justify="center">
+							<Grid item>
+								<Button
+									variant="outlined"
+									color="primary"
+									startIcon={<TwitterIcon />}
+									onClick={this.handleShare.bind(this)}
+								>
+									Twitterでシェア
+								</Button>
+							</Grid>
+						</Grid>
+					</div>
+				</Container>
 			</React.Fragment>
 		);
 	}
