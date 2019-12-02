@@ -49,7 +49,7 @@ class App extends React.Component {
 							<Route exact={true} path="/visualize" component={Visualize} />
 						</div>
 					</Router>
-					<Box mt={8}>
+					<Box mt={4} mb={2}>
 						<Copyright />
 					</Box>
 				</main>

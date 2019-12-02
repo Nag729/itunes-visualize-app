@@ -7,7 +7,8 @@ import Fab from '@material-ui/core/Fab';
 // import InsertChartIcon from '@material-ui/icons/InsertChart';
 // import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
 import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
-import TwitterIcon from '@material-ui/icons/Twitter';
+// import TwitterIcon from '@material-ui/icons/Twitter';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -16,6 +17,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { HorizontalBar } from 'react-chartjs-2';
+import { TwitterShareButton, TwitterIcon } from 'react-share';
 
 const styles = theme => ({
 	root: {
@@ -35,6 +37,9 @@ const styles = theme => ({
 	tableWrapper: {
 		minWidth: 650,
 		maxHeight: 500,
+	},
+	itemButton: {
+		margin: theme.spacing(0, 2, 0),
 	},
 });
 
@@ -98,9 +103,9 @@ class Visualize extends React.Component {
 		let title;
 
 		if (label === 'Song') {
-			title = 'Play-Count Sort By Song';
+			title = '曲ごとのTOP10👑';
 		} else {
-			title = 'Play-Count Sort By Artist';
+			title = 'アーティストごとのTOP10👑';
 		}
 
 		const config = {
@@ -147,10 +152,24 @@ class Visualize extends React.Component {
 	}
 
 	/**
+	 * 画像のダウンロード
+	 */
+	handleDownload() {
+		/**
+		 * Chromeでしか動かないかも
+		 */
+		const pic = this.playCountGraph.chartInstance.canvas.toDataURL();
+		let link = document.createElement('a');
+		link.href = pic;
+		link.download = 'song-info.png';
+		link.click();
+	}
+
+	/**
 	 * Twitterでシェアする
 	 */
 	handleShare() {
-		console.log('share');
+		// console.log(this.playCountGraph);
 	}
 
 	render() {
@@ -233,6 +252,7 @@ class Visualize extends React.Component {
 									data={this.state.isSong ? this.state.songConfig : this.state.artistConfig}
 									witdh={60}
 									height={120}
+									ref={ref => (this.playCountGraph = ref)}
 								/>
 							</Container>
 						);
@@ -245,11 +265,23 @@ class Visualize extends React.Component {
 								<Button
 									variant="outlined"
 									color="primary"
-									startIcon={<TwitterIcon />}
-									onClick={this.handleShare.bind(this)}
+									onClick={this.handleDownload.bind(this)}
+									startIcon={<CloudDownloadIcon />}
+									className={this.props.classes.itemButton}
 								>
-									Twitterでシェア
+									画像をダウンロード
 								</Button>
+							</Grid>
+							<Grid item>
+								<TwitterShareButton
+									url={'https://itunes-visualize-app.herokuapp.com/'}
+									title={'iTunesで聴いた曲のランキングを調べたよ！'}
+									via={'pekonyaaanko'}
+									hashtags={['iTunes分析']}
+									className={this.props.classes.itemButton}
+								>
+									<TwitterIcon size={32} round />
+								</TwitterShareButton>
 							</Grid>
 						</Grid>
 					</div>

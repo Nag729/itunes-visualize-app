@@ -112,8 +112,8 @@ def parseDfToJson(df, sortKey):
         df = df.reset_index()
         # app.logger.debug(df)
 
-    # return件数を10件に絞る
-    df = df.head(10)
+    # return件数を20件に絞る
+    df = df.head(20)
 
     # record単位のjsonに変換
     json = df.to_json(force_ascii=False, orient="records")
