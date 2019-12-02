@@ -13,6 +13,7 @@ UPLOAD_FOLDER = './uploads'
 app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
 # ルートpath
 # アプリ起動時にアクセスされて、Reactのトップページを表示する
 @app.route('/')
@@ -44,22 +45,21 @@ def upload():
     file.save(os.path.join(app.config['UPLOAD_FOLDER'], saveName))
 
     # 取得したXMLファイルを元にパースするJSONをjsonFileにセット
-    jsonFile = parseXMLFile(saveName)
+    df = parseXmlToDf(saveName)
+    df.to_pickle("./pickles" + saveName + ".pkl")
+    jsonFile = parseDfToJson(df)
 
     return jsonify(jsonFile)
 
 
 # アップロードされたXMLファイルをパースしてJSON形式で返す関数
-def parseXMLFile(fileName):
+def parseXmlToDf(fileName):
 
     # アップロードされたファイルデータをパース
     tree = et.parse("./uploads/" + fileName)
-    root = tree.getroot()
 
     # 要素取得：Xpath指定
     information = tree.findall("dict/dict/dict")
-
-    app.logger.debug(len(information) == 0)
 
     if len(information) == 0:
         msg = 'XMLファイルの形式が正しくありません'
@@ -78,8 +78,26 @@ def parseXMLFile(fileName):
                 song_info_dict[key] = element.text
         song_info.append(song_info_dict)
 
+    # song_infoをPandasのデータフレームに変換
     df = pd.DataFrame(song_info)
-    df = df.head(100)  # return件数を100件に絞る
+
+    # "Play Count"をNull埋めしてint型に変換
+    df = df.fillna({"Play Count": 0})
+    df["Play Count"] = df["Play Count"].astype(int)
+
+    return df
+
+
+# 渡されたDataFrameをJson形式で返す
+def parseDfToJson(df, bySong):
+
+    # app.logger.debug(df.dtypes)
+
+    # 曲の再生数順にソート
+    df = df.sort_values(by='Play Count', ascending=False)
+
+    # return件数を10件に絞る
+    df = df.head(10)
 
     # record単位のjsonに変換
     json = df.to_json(force_ascii=False, orient="records")
