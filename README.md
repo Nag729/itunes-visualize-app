@@ -32,8 +32,10 @@
 ### How To Deploy
 
 1. `/frontend_react`ディレクトリの React アプリケーションを`npm tun build`コマンドでビルド
-2. 作成された`/build`ディレクトリを`/backend_flask`にコピー
-3. `git subtree push --prefix backend_flask/ heroku master`で Heroku にデプロイ
+2. 作成された`/build`ディレクトリを`/backend_flask`にコピー  
+   `cp -r build ./../backend_flask`
+3. Heroku にアプリケーションをデプロイ  
+   `heroku login` -> `git subtree push --prefix backend_flask/ heroku master`
 
 ### 役に立ったリンク集
 
