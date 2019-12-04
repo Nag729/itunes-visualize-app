@@ -79,6 +79,29 @@ class Visualize extends React.Component {
 			songConfig: songConfig,
 			artistConfig: artistConfig,
 		});
+
+		this.setMetaTags();
+	}
+
+	/**
+	 * Twitter Card向けにmeta tagを挿し込む
+	 */
+	setMetaTags() {
+		const image = '';
+
+		// title以外のmeta
+		const headData = document.head.children;
+
+		for (let i = 0; i < headData.length; i++) {
+			const nameVal = headData[i].getAttribute('name');
+			if (nameVal !== null) {
+				// OGP(twitter)の設定
+				if (nameVal.indexOf('twitter:image') !== -1) {
+					// headData[i].setAttribute('content', image);
+					console.log('ここでimageタグの設定をするよ');
+				}
+			}
+		}
 	}
 
 	/**
@@ -274,10 +297,10 @@ class Visualize extends React.Component {
 							</Grid>
 							<Grid item>
 								<TwitterShareButton
-									url={'https://itunes-visualize-app.herokuapp.com/'}
-									title={'iTunesで聴いた曲のランキングを調べたよ！'}
-									via={'pekonyaaanko'}
-									hashtags={['iTunes分析']}
+									// url={'https://itunes-visualize-app.herokuapp.com/'}
+									// title={'iTunesで聴いた曲のランキングを調べたよ！'}
+									// via={'pekonyaaanko'}
+									// hashtags={['iTunes分析']}
 									className={this.props.classes.itemButton}
 								>
 									<TwitterIcon size={32} round />

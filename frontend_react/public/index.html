@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    {% comment %} <link rel="icon" href="%PUBLIC_URL%/favicon.ico" /> {% endcomment %}
+    <link rel="icon" href="./favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
@@ -14,7 +15,8 @@
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    {% comment %} <link rel="manifest" href="%PUBLIC_URL%/manifest.json" /> {% endcomment %}
+    <link rel="manifest" href="./manifest.json" />
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -25,6 +27,14 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>iTunes Visualize App</title>
+    {% comment %} Twitter Card {% endcomment %}
+    <meta name="twitter:card" content="summary_large_image"></meta>
+    <meta name="twitter:creator" content="@pekonyaaanko"></meta>
+    <meta property="og:url" content="https://itunes-visualize-app.herokuapp.com/visualize" />
+    <meta property="og:title" content="iTunesで聴いた曲のランキングを調べたよ！" />
+    <meta property="og:description" content="Detail Description." />
+    <meta property="og:image" content="https://3.bp.blogspot.com/-XKyHG9ipUuk/WxvKRN9CeYI/AAAAAAABMn8/usJ7TuHvS4s8Qff7wFV6iY6vtRwM3bQwgCLcBGAs/s400/music_headphone_man.png" />
+
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

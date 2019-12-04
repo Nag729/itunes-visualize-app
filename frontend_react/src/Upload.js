@@ -60,8 +60,10 @@ class TopPage extends React.Component {
 		const params = new FormData();
 		params.append('file', this.state.file, 'records.xml');
 
+		const url = 'https://itunes-visualize-app.herokuapp.com';
+
 		axios
-			.post('https://itunes-visualize-app.herokuapp.com/api/upload', params, {
+			.post(url + '/api/upload', params, {
 				headers: {
 					'content-type': 'multipart/form-data',
 				},
@@ -84,11 +86,13 @@ class TopPage extends React.Component {
 						},
 					});
 				} else {
+					// TODO: エラー処理をキレイにする
 					alert('XMLファイルからデータが正しく取得できませんでした😢');
 				}
 			})
 			.catch(() => {
-				console.error('よくわからないけどエラーだよ😢');
+				console.error('エラーになっちゃいました😢');
+				alert('エラーになっちゃいました😢');
 				this.setState({
 					isLoading: !this.state.isLoading, // Loadingを終了
 				});
