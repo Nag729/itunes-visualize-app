@@ -274,7 +274,7 @@ class Visualize extends React.Component {
 								<HorizontalBar
 									data={this.state.isSong ? this.state.songConfig : this.state.artistConfig}
 									witdh={60}
-									height={120}
+									height={150}
 									ref={ref => (this.playCountGraph = ref)}
 								/>
 							</Container>
