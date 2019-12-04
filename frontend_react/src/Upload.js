@@ -61,7 +61,7 @@ class TopPage extends React.Component {
 		params.append('file', this.state.file, 'records.xml');
 
 		axios
-			.post('http://localhost:3000/api/upload', params, {
+			.post('https://itunes-visualize-app.herokuapp.com/api/upload', params, {
 				headers: {
 					'content-type': 'multipart/form-data',
 				},
