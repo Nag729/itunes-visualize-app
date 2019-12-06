@@ -9,9 +9,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 // Components
-import Copyright from './Copyright';
-import Upload from './Upload';
-import Visualize from './Visualize';
+import Copyright from './components/Copyright';
+import Upload from './components/Upload';
+import Visualize from './components/Visualize';
 // このページの関連
 import GlobalStyle from './globalStyles.js';
 import './App.css';

@@ -1,3 +1,4 @@
+# for general
 import os
 from flask import Flask, render_template, request, jsonify, make_response
 import werkzeug
@@ -5,8 +6,14 @@ from datetime import datetime
 import random
 import string
 
+# for データ分析
 import pandas as pd
 import xml.etree.ElementTree as et
+
+# for AWS-S3
+import logging
+import boto3
+from botocore.exceptions import ClientError
 
 app = Flask(__name__, static_folder="./build/static",
             template_folder="./build")
@@ -15,6 +22,8 @@ UPLOAD_FOLDER = './uploads'
 app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# S3クライアントの生成
+s3_client = boto3.client('s3')
 
 # ルートpath
 # アプリ起動時にアクセスされて、Reactのトップページを表示する
@@ -45,27 +54,38 @@ def upload():
     randStr = ''.join(
         [random.choice(string.ascii_letters + string.digits) for i in range(6)])
 
-    # ファイルの保存
+    # 保存するファイル名とパスを生成
     saveName = datetime.now().strftime("%Y%m%d_%H%M%S_") + randStr + "_" + \
         werkzeug.utils.secure_filename(fileName)
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], saveName))
+    upload_data_path = os.path.join(app.config['UPLOAD_FOLDER'], saveName)
+    # 一時ファイルの保存
+    file.save(upload_data_path)
+
+    try:
+        s3_client.upload_file(
+            upload_data_path, 'itunes-visualize-app', 'uploads/' + saveName)
+    except ClientError as e:
+        logging.error(e)
 
     # 取得したXMLファイルを元にパースするJSONをjsonFileにセット
-    df = parseXmlToDf(saveName)
+    df = parseXmlToDf(upload_data_path)
 
     jsonSortBySong = parseDfToJson(df, 'Song')
     jsonSortByArtist = parseDfToJson(df, 'Artist')
+
+    # 一時ファイルの削除
+    os.remove(upload_data_path)
 
     return jsonify(song=jsonSortBySong, artist=jsonSortByArtist)
 
 
 # アップロードされたXMLファイルをパースしてJSON形式で返す関数
-def parseXmlToDf(fileName):
+def parseXmlToDf(upload_data_path):
 
     # アップロードされたファイルデータをパース
-    tree = et.parse("./uploads/" + fileName)
+    tree = et.parse(upload_data_path)
 
-    # 要素取得：Xpath指定
+    # 要素取得
     information = tree.findall("dict/dict/dict")
 
     if len(information) == 0:
