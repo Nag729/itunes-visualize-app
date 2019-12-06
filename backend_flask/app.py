@@ -11,9 +11,9 @@ import pandas as pd
 import xml.etree.ElementTree as et
 
 # for AWS-S3
-import logging
-import boto3
-from botocore.exceptions import ClientError
+# import logging
+# import boto3
+# from botocore.exceptions import ClientError
 
 app = Flask(__name__, static_folder="./build/static",
             template_folder="./build")
@@ -23,7 +23,7 @@ app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # S3クライアントの生成
-s3_client = boto3.client('s3')
+# s3_client = boto3.client('s3')
 
 # ルートpath
 # アプリ起動時にアクセスされて、Reactのトップページを表示する
@@ -61,11 +61,11 @@ def upload():
     # 一時ファイルの保存
     file.save(upload_data_path)
 
-    try:
-        s3_client.upload_file(
-            upload_data_path, 'itunes-visualize-app', 'uploads/' + saveName)
-    except ClientError as e:
-        logging.error(e)
+    # try:
+    #     s3_client.upload_file(
+    #         upload_data_path, 'itunes-visualize-app', 'uploads/' + saveName)
+    # except ClientError as e:
+    #     logging.error(e)
 
     # 取得したXMLファイルを元にパースするJSONをjsonFileにセット
     df = parseXmlToDf(upload_data_path)
