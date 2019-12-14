@@ -1,13 +1,10 @@
 import React from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
-import { Container, Grid, IconButton } from '@material-ui/core';
+import { Container, Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
-// import InsertChartIcon from '@material-ui/icons/InsertChart';
-// import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
 import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
-// import TwitterIcon from '@material-ui/icons/Twitter';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -18,6 +15,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { HorizontalBar } from 'react-chartjs-2';
 import { TwitterShareButton, TwitterIcon } from 'react-share';
+import axios from '../plugins/axios';
 
 const styles = theme => ({
 	root: {
@@ -192,7 +190,47 @@ class Visualize extends React.Component {
 	 * Twitterでシェアする
 	 */
 	handleShare() {
-		// console.log(this.playCountGraph);
+		let pic;
+		let public_path;
+
+		// 画像を作成
+		const createImage = () => {
+			return new Promise((resolve, reject) => {
+				this.playCountGraph.chartInstance.canvas.toBlob(blob => {
+					console.log(blob);
+					pic = blob;
+					resolve();
+				});
+			});
+		};
+
+		createImage().then(() => {
+			console.log(`画像のBlobは${pic}`);
+			const params = new FormData();
+			params.append('image', pic, 'graphImage.png');
+
+			// Flaskに送る
+			axios
+				.post('/api/image', params)
+				.then(result => {
+					// パスを受け取ってmetaタグに追加
+					public_path = result.data;
+
+					const headData = document.head.children;
+					for (let i = 0; i < headData.length; i++) {
+						const nameVal = headData[i].getAttribute('name');
+						if (nameVal !== null) {
+							// OGP(twitter)の設定
+							if (nameVal.indexOf('og:image') !== -1) {
+								headData[i].setAttribute('content', public_path);
+							}
+						}
+					}
+				})
+				.catch(() => {
+					console.error('エラーになっちゃいました😢');
+				});
+		});
 	}
 
 	render() {
@@ -296,15 +334,16 @@ class Visualize extends React.Component {
 								</Button>
 							</Grid>
 							<Grid item>
-								{/* <TwitterShareButton
-									// url={'https://itunes-visualize-app.herokuapp.com/'}
-									// title={'iTunesで聴いた曲のランキングを調べたよ！'}
-									// via={'pekonyaaanko'}
-									// hashtags={['iTunes分析']}
+								<TwitterShareButton
+									url={'https://itunes-visualize-app.herokuapp.com/'}
+									title={'iTunesで聴いた曲のランキングを調べたよ！'}
+									via={'pekonyaaanko'}
+									hashtags={['iTunes分析']}
 									className={this.props.classes.itemButton}
+									beforeOnClick={this.handleShare.bind(this)}
 								>
 									<TwitterIcon size={32} round />
-								</TwitterShareButton> */}
+								</TwitterShareButton>
 							</Grid>
 						</Grid>
 					</div>

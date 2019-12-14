@@ -11,9 +11,9 @@ import pandas as pd
 import xml.etree.ElementTree as et
 
 # for AWS-S3
-# import logging
-# import boto3
-# from botocore.exceptions import ClientError
+import logging
+import boto3
+from botocore.exceptions import ClientError
 
 app = Flask(__name__, static_folder="./build/static",
             template_folder="./build")
@@ -23,7 +23,8 @@ app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # S3クライアントの生成
-# s3_client = boto3.client('s3')
+s3_client = boto3.client('s3')
+s3_bucket_name = 'itunes-visualize-app'
 
 # ルートpath
 # アプリ起動時にアクセスされて、Reactのトップページを表示する
@@ -61,11 +62,11 @@ def upload():
     # 一時ファイルの保存
     file.save(upload_data_path)
 
-    # try:
-    #     s3_client.upload_file(
-    #         upload_data_path, 'itunes-visualize-app', 'uploads/' + saveName)
-    # except ClientError as e:
-    #     logging.error(e)
+    try:
+        s3_client.upload_file(
+            upload_data_path, s3_bucket_name, 'uploads/' + saveName)
+    except ClientError as e:
+        logging.error(e)
 
     # 取得したXMLファイルを元にパースするJSONをjsonFileにセット
     df = parseXmlToDf(upload_data_path)
@@ -139,6 +140,43 @@ def parseDfToJson(df, sortKey):
     json = df.to_json(force_ascii=False, orient="records")
 
     return json
+
+# 画像ファイルアップロード時に呼び出されるREST
+@app.route('/api/image', methods=['POST'])
+def upload_image():
+    # axiosでPOSTされた画像ファイルを取得
+    pic = request.files['image']
+    app.logger.debug(pic)
+
+    # S3に画像をアップロード
+    fileName = pic.filename
+    app.logger.debug(fileName)
+
+    # ランダム文字列の生成
+    randStr = ''.join(
+        [random.choice(string.ascii_letters + string.digits) for i in range(6)])
+
+    # 保存するファイル名とパスを生成
+    saveName = datetime.now().strftime("%Y%m%d_%H%M%S_") + randStr + "_" + \
+        werkzeug.utils.secure_filename(fileName)
+    upload_data_path = os.path.join(app.config['UPLOAD_FOLDER'], saveName)
+    # 一時ファイルの保存
+    pic.save(upload_data_path)
+
+    try:
+        s3_client.upload_file(
+            upload_data_path, 'itunes-visualize-app', 'uploads/' + saveName)
+    except ClientError as e:
+        logging.error(e)
+
+    bucket_location = s3_client.get_bucket_location(Bucket=s3_bucket_name)
+    public_url = "https://s3-{0}.amazonaws.com/{1}/uploads/{2}".format(
+        bucket_location['LocationConstraint'],
+        s3_bucket_name,
+        saveName)
+    app.logger.debug(public_url)
+
+    return make_response(jsonify(public_url))
 
 
 # おまじない
