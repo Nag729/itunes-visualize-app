@@ -18,13 +18,19 @@ from botocore.exceptions import ClientError
 app = Flask(__name__, static_folder="./build/static",
             template_folder="./build")
 
-UPLOAD_FOLDER = './uploads'
 app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = './uploads'
+# app.config['AWS_ACCESS_KEY'] = 'AKIAWKYGJS5SLS5P2XUW'
+# app.config['AWS_SECRET_ACCESS_KEY'] = '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'
+# app.config['AWS_S3_BUCKET'] = 'itunes-visualize-app'
 
 # S3クライアントの生成
-s3_client = boto3.client('s3')
-s3_bucket_name = 'itunes-visualize-app'
+s3_client = boto3.client(
+    's3',
+    aws_access_key_id=os.environ['AWS_ACCESS_KEY'],
+    aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY']
+)
+s3_bucket_name = os.environ['AWS_S3_BUCKET']
 
 # ルートpath
 # アプリ起動時にアクセスされて、Reactのトップページを表示する
