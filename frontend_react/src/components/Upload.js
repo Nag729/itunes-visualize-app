@@ -103,14 +103,14 @@ class TopPage extends React.Component {
 				<div className={this.props.classes.heroContent}>
 					<Container maxWidth="md">
 						<Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom>
-							自らの音楽性を再発見しましょう!
+							iTunesのライブラリ情報を可視化!
 						</Typography>
 						<Typography variant="subtitle1" align="center" color="textSecondary" paragraph>
 							iTunesからエクスポートした <code>.xml</code> ファイルをアップロードすると簡単に情報を可視化できます.
 							<br />
 							情報のエクスポートは、 <code>iTunes>ファイル>ライブラリ>ライブラリを書き出し</code> から
-							<br />
-							これまでに最も多く聴いた曲やアーティストごとのランキングを見て、音楽の好みを再発見しましょう！
+							{/* <br />
+							これまでに最も多く聴いた曲やアーティストごとのランキングを見て、音楽の好みを再発見しましょう！ */}
 						</Typography>
 					</Container>
 				</div>

@@ -239,12 +239,12 @@ class Visualize extends React.Component {
 				<div className={this.props.classes.heroContent}>
 					<Container maxWidth="sm">
 						<Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom>
-							新たな発見をシェアしましょう！
+							Ranking!
 						</Typography>
 						<Typography variant="subtitle1" align="center" color="textSecondary" paragraph>
-							検索条件から、色々な情報を得ることができます.
-							<br />
-							もしも新たな発見があったなら、それをTwitterでシェアしましょう！
+							{/* 検索条件から、色々な情報を得ることができます. */}
+							{/* <br /> */}
+							Twitterでシェアしましょう！
 						</Typography>
 						<div className={this.props.classes.heroButtons}>
 							<Grid container justify="center">
