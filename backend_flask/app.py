@@ -10,10 +10,10 @@ import string
 import pandas as pd
 import xml.etree.ElementTree as et
 
-# # for AWS-S3
-# import logging
-# import boto3
-# from botocore.exceptions import ClientError
+# for AWS-S3
+import logging
+import boto3
+from botocore.exceptions import ClientError
 
 app = Flask(__name__, static_folder="./build/static",
             template_folder="./build")
@@ -21,13 +21,13 @@ app = Flask(__name__, static_folder="./build/static",
 app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
 app.config['UPLOAD_FOLDER'] = './uploads'
 
-# # S3クライアントの生成
-# s3_client = boto3.client(
-#     's3',
-#     aws_access_key_id=os.environ['AWS_ACCESS_KEY'],
-#     aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY']
-# )
-# s3_bucket_name = os.environ['AWS_S3_BUCKET']
+# S3クライアントの生成
+s3_client = boto3.client(
+    's3',
+    aws_access_key_id=os.environ['AWS_ACCESS_KEY'],
+    aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY']
+)
+s3_bucket_name = os.environ['AWS_S3_BUCKET']
 
 # ルートpath
 # アプリ起動時にアクセスされて、Reactのトップページを表示する
@@ -65,11 +65,11 @@ def upload():
     # 一時ファイルの保存
     file.save(upload_data_path)
 
-    # try:
-    #     s3_client.upload_file(
-    #         upload_data_path, s3_bucket_name, 'uploads/' + saveName)
-    # except ClientError as e:
-    #     logging.error(e)
+    try:
+        s3_client.upload_file(
+            upload_data_path, s3_bucket_name, 'uploads/' + saveName)
+    except ClientError as e:
+        logging.error(e)
 
     # 取得したXMLファイルを元にパースするJSONをjsonFileにセット
     df = parseXmlToDf(upload_data_path)
@@ -166,18 +166,18 @@ def upload_image():
     # 一時ファイルの保存
     pic.save(upload_data_path)
 
-    # try:
-    #     s3_client.upload_file(
-    #         upload_data_path, 'itunes-visualize-app', 'uploads/' + saveName)
-    # except ClientError as e:
-    #     logging.error(e)
+    try:
+        s3_client.upload_file(
+            upload_data_path, 'itunes-visualize-app', 'uploads/' + saveName)
+    except ClientError as e:
+        logging.error(e)
 
-    # bucket_location = s3_client.get_bucket_location(Bucket=s3_bucket_name)
-    # public_url = "https://s3-{0}.amazonaws.com/{1}/uploads/{2}".format(
-    #     bucket_location['LocationConstraint'],
-    #     s3_bucket_name,
-    #     saveName)
-    # app.logger.debug(public_url)
+    bucket_location = s3_client.get_bucket_location(Bucket=s3_bucket_name)
+    public_url = "https://s3-{0}.amazonaws.com/{1}/uploads/{2}".format(
+        bucket_location['LocationConstraint'],
+        s3_bucket_name,
+        saveName)
+    app.logger.debug(public_url)
 
     return make_response(jsonify(public_url))
 
